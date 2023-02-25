@@ -15,6 +15,11 @@ class PokemonEntity(models.Model):
     lon = models.FloatField()
     appeared_at = models.DateTimeField()
     disappear_at = models.DateTimeField()
+    level = models.IntegerField(default=1)
+    health = models.IntegerField(default=100)
+    strength = models.IntegerField(default=10)
+    defence = models.IntegerField(default=5)
+    stamina = models.IntegerField(default=100)
 
     def __str__(self):
         return f'lat - {self.lat} : lon - {self.lon}'
