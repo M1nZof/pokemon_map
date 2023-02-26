@@ -6,7 +6,8 @@ class Pokemon(models.Model):
     title_en = models.CharField(max_length=200, blank=True)
     title_jp = models.CharField(max_length=200, blank=True)
     description = models.TextField(blank=True)
-    evolved_from = models.ForeignKey("self", null=True, on_delete=models.CASCADE)
+    evolved_from = models.ForeignKey("self", null=True, on_delete=models.CASCADE,
+                                     related_name="pokemons", related_query_name="pokemon_evolution")
     image = models.ImageField(null=True)
 
     def __str__(self):

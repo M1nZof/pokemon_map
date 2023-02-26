@@ -1,6 +1,7 @@
 import folium
 import json
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils.timezone import localtime
@@ -79,6 +80,20 @@ def show_pokemon(request, pokemon_id):
             'pokemon_id': pokemon.evolved_from.pk,
             'img_url': previous_evolution_pokemon_image
         }
+
+    try:
+        next_evolution = pokemon.pokemons.get()
+    except ObjectDoesNotExist:
+        next_evolution = None
+
+    if next_evolution:
+        next_evolution_pokemon_image = request.build_absolute_uri(f'../../media/{next_evolution.image}')
+        next_evolution = {
+            "title_ru": next_evolution.title_ru,
+            "pokemon_id": next_evolution.pk,
+            "img_url": next_evolution_pokemon_image
+        }
+
     pokemon_image = request.build_absolute_uri(f'../../media/{pokemon.image}')
     pokemon_page = {
         'img_url': pokemon_image,
@@ -86,7 +101,8 @@ def show_pokemon(request, pokemon_id):
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
         'description': pokemon.description,
-        'previous_evolution': previous_evolution
+        'previous_evolution': previous_evolution,
+        'next_evolution': next_evolution
     }
 
     return render(request, 'pokemon.html', context={
