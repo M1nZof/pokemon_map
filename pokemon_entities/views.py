@@ -48,7 +48,7 @@ def show_all_pokemons(request):
         pokemons_on_page.append({
             'pokemon_id': pokemon.pk,
             'img_url': pokemon_image,
-            'title_ru': pokemon.text,
+            'title_ru': pokemon.title_ru,
         })
 
     return render(request, 'mainpage.html', context={
@@ -71,15 +71,15 @@ def show_pokemon(request, pokemon_id):
                 pokemon_image
             )
 
-    pokemon_on_page = []
-    for pokemon in pokemons_entities:
-        pokemon_image = request.build_absolute_uri(f'../../media/{pokemon.pokemon.image}')
-        pokemon_on_page.append({
-            'pokemon_id': pokemon.pk,
-            'img_url': pokemon_image,
-            'title_ru': pokemon.pokemon.text,
-        })
+    pokemon_image = request.build_absolute_uri(f'../../media/{pokemon.image}')
+    pokemon_page = {
+        'img_url': pokemon_image,
+        'title_ru': pokemon.title_ru,
+        'title_en': pokemon.title_en,
+        'title_jp': pokemon.title_jp,
+        'description': pokemon.description
+    }
 
     return render(request, 'pokemon.html', context={
-        'map': folium_map._repr_html_(), 'pokemon': pokemon_on_page
+        'map': folium_map._repr_html_(), 'pokemon': pokemon_page
     })
