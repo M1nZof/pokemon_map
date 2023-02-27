@@ -60,7 +60,7 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemon = Pokemon.objects.filter(pk=pokemon_id)[0]
+    pokemon = Pokemon.objects.filter(pk=pokemon_id).first()
     pokemons_entities = PokemonEntity.objects.filter(pokemon=pokemon)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
