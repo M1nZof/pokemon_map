@@ -7,7 +7,7 @@ class Pokemon(models.Model):
     title_jp = models.CharField(max_length=200, verbose_name='Имя покемона на японском', null=True, blank=True)
     description = models.TextField(blank=True, verbose_name='Описание покемона')
     evolved_from = models.ForeignKey("self", null=True, on_delete=models.CASCADE,
-                                     related_name="pokemons", related_query_name="pokemon_evolution",
+                                     related_name="pokemon_evolutions", related_query_name="pokemon_evolution",
                                      verbose_name='Из кого эволюционировал покемон')
     image = models.ImageField(null=True, verbose_name='Картинка покемона')
 
