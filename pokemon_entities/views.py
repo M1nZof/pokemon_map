@@ -58,19 +58,19 @@ def show_all_pokemons(request):
 
 
 def show_pokemon(request, pokemon_id):
-    pokemon = Pokemon.objects.filter(pk=pokemon_id).first()
-    pokemons_entities = PokemonEntity.objects.filter(pokemon=pokemon)
     time_now = localtime()
+    pokemon = Pokemon.objects.filter(pk=pokemon_id).first()
+    pokemons_entities = PokemonEntity.objects.filter(pokemon=pokemon, appeared_at__lt=time_now,
+                                                     disappear_at__gt=time_now)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemons_entities:
-        if pokemon_entity.appeared_at > time_now or pokemon_entity.disappear_at > time_now:
-            pokemon_image = request.build_absolute_uri(f'../../{MEDIA_URL}/{pokemon.image}')
-            add_pokemon(
-                folium_map, pokemon_entity.lat,
-                pokemon_entity.lon,
-                pokemon_image
-            )
+        pokemon_image = request.build_absolute_uri(f'../../{MEDIA_URL}/{pokemon.image}')
+        add_pokemon(
+            folium_map, pokemon_entity.lat,
+            pokemon_entity.lon,
+            pokemon_image
+        )
 
     previous_evolution = None
     if pokemon.evolved_from:
