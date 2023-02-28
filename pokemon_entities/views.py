@@ -1,9 +1,6 @@
 import folium
-import json
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import Q
-from django.http import HttpResponseNotFound
 from django.shortcuts import render
 from django.utils.timezone import localtime
 
@@ -32,7 +29,8 @@ def add_pokemon(folium_map, lat, lon, image_url=DEFAULT_IMAGE_URL):
 
 
 def show_all_pokemons(request):
-    pokemons_entities = PokemonEntity.objects.filter(Q(appeared_at__gt=localtime()) | Q(disappear_at__gt=localtime()))
+    time_now = localtime()
+    pokemons_entities = PokemonEntity.objects.filter(appeared_at__lt=time_now, disappear_at__gt=time_now)
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in pokemons_entities:
@@ -62,10 +60,11 @@ def show_all_pokemons(request):
 def show_pokemon(request, pokemon_id):
     pokemon = Pokemon.objects.filter(pk=pokemon_id).first()
     pokemons_entities = PokemonEntity.objects.filter(pokemon=pokemon)
+    time_now = localtime()
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemons_entities:
-        if pokemon_entity.appeared_at > localtime() or pokemon_entity.disappear_at > localtime():
+        if pokemon_entity.appeared_at > time_now or pokemon_entity.disappear_at > time_now:
             pokemon_image = request.build_absolute_uri(f'../../{MEDIA_URL}/{pokemon.image}')
             add_pokemon(
                 folium_map, pokemon_entity.lat,
