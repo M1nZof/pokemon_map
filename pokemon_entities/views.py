@@ -81,10 +81,7 @@ def show_pokemon(request, pokemon_id):
             'img_url': previous_evolution_pokemon_image
         }
 
-    try:
-        next_evolution = pokemon.next_evolutions.first()
-    except ObjectDoesNotExist:
-        next_evolution = None
+    next_evolution = pokemon.next_evolutions.first()
 
     if next_evolution:
         next_evolution_pokemon_image = request.build_absolute_uri(f'../../{MEDIA_URL}/{next_evolution.image}')
