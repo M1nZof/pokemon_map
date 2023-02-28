@@ -83,7 +83,7 @@ def show_pokemon(request, pokemon_id):
         }
 
     try:
-        next_evolution = pokemon.pokemon_evolutions.first()
+        next_evolution = pokemon.next_evolutions.first()
     except ObjectDoesNotExist:
         next_evolution = None
 
