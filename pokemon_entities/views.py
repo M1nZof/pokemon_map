@@ -36,24 +36,18 @@ def show_all_pokemons(request):
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon in pokemons_entities:
-        pokemon_image_path = glob.glob(f'**/{pokemon.pokemon.image}')[0].replace('\\', '/')
-        pokemon_image = request.build_absolute_uri(pokemon_image_path)
-
         add_pokemon(
             folium_map, pokemon.lat,
             pokemon.lon,
-            pokemon_image
+            request.build_absolute_uri(pokemon.pokemon.image.url)
         )
 
     pokemons_on_page = []
     pokemons = Pokemon.objects.all()
     for pokemon in pokemons:
-        pokemon_image_path = glob.glob(f'**/{pokemon.image}')[0].replace('\\', '/')
-        pokemon_image = request.build_absolute_uri(pokemon_image_path)
-
         pokemons_on_page.append({
             'pokemon_id': pokemon.pk,
-            'img_url': pokemon_image,
+            'img_url': pokemon.image.url,
             'title_ru': pokemon.title_ru,
         })
 
@@ -71,43 +65,31 @@ def show_pokemon(request, pokemon_id):
 
     folium_map = folium.Map(location=MOSCOW_CENTER, zoom_start=12)
     for pokemon_entity in pokemons_entities:
-        pokemon_image_path = glob.glob(f'**/{pokemon.image}')[0].replace('\\', '/')
-        pokemon_image = request.build_absolute_uri(f"../../{pokemon_image_path}")
-
         add_pokemon(
             folium_map, pokemon_entity.lat,
             pokemon_entity.lon,
-            pokemon_image
+            request.build_absolute_uri(pokemon.image.url)
         )
 
     previous_evolution = None
     if pokemon.evolved_from:
-        previous_evolution_pokemon_image_path = glob.glob(f'**/{pokemon.evolved_from.image}')[0].replace('\\', '/')
-        previous_evolution_pokemon_image = request.build_absolute_uri(f"../../{previous_evolution_pokemon_image_path}")
-
         previous_evolution = {
             'title_ru': pokemon.evolved_from.title_ru,
             'pokemon_id': pokemon.evolved_from.pk,
-            'img_url': previous_evolution_pokemon_image
+            'img_url': pokemon.evolved_from.image.url
         }
 
     next_evolution = pokemon.next_evolutions.first()
 
     if next_evolution:
-        next_evolution_pokemon_image_path = glob.glob(f'**/{next_evolution.image}')[0].replace('\\', '/')
-        next_evolution_pokemon_image = request.build_absolute_uri(f"../../{next_evolution_pokemon_image_path}")
-
         next_evolution = {
             "title_ru": next_evolution.title_ru,
             "pokemon_id": next_evolution.pk,
-            "img_url": next_evolution_pokemon_image
+            "img_url": next_evolution.image.url
         }
 
-    pokemon_image_path = glob.glob(f'**/{pokemon.image}')[0].replace('\\', '/')
-    pokemon_image = request.build_absolute_uri(f"../../{pokemon_image_path}")
-
     pokemon_page = {
-        'img_url': pokemon_image,
+        'img_url': pokemon.image.url,
         'title_ru': pokemon.title_ru,
         'title_en': pokemon.title_en,
         'title_jp': pokemon.title_jp,
